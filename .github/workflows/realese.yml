@@ -27,7 +27,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          token: ${{ secrets.VRPACKAGETOKEN }}
+          # token: ${{ secrets.VRPACKAGETOKEN }}
           fetch-depth: 0
 
       - name: Git Config
