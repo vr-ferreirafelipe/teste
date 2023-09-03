@@ -2,9 +2,9 @@ name: Check Commit
 
 on:
   workflow_call:
-    secrets:
-      VRPACKAGETOKEN:
-        required: true
+    # secrets:
+    #   VRPACKAGETOKEN:
+    #     required: true
     outputs:
       commit_message:
         description: "Armazena as messagens de novos commits"
