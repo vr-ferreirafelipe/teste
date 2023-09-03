@@ -10,8 +10,8 @@ jobs:
   call-check-commit:
     name: Call Check Commit
     uses: ./.github/workflows/check-commits.yml
-    secrets:
-      VRPACKAGETOKEN: ${{ secrets.VRPACKAGETOKEN }}
+    # secrets:
+    #   VRPACKAGETOKEN: ${{ secrets.VRPACKAGETOKEN }}
 
   generate-version:
     name: Generate Tag
