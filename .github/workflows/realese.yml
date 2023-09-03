@@ -84,7 +84,7 @@ jobs:
             npm version $NEW_VERSION -m "ci: release v$NEW_VERSION"
           fi
           
-          git log -2
+          git push
 
 
 # jobs:
