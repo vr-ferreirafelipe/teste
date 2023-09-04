@@ -11,7 +11,7 @@ jobs:
     name: Call Check Commit
     uses: ./.github/workflows/check-commits.yml
     secrets:
-      VR_PACKAGE_TOKEN: ${{ secrets.VR_PACKAGE_TOKEN }}
+      VR_PACKAGE_TOKEN: ${{ secrets.VRPACKAGETOKEN }}
 
   call-generate-release-tag:
     name: Call Generate release tag
@@ -22,7 +22,7 @@ jobs:
       HAS_CHANGES: ${{ needs.call-check-commit.outputs.has_changes }}
       COMMIT_MESSAGES: ${{ needs.call-check-commit.outputs.commit_message }}
     secrets:
-      VR_PACKAGE_TOKEN: ${{ secrets.VR_PACKAGE_TOKEN }}
+      VR_PACKAGE_TOKEN: ${{ secrets.VRPACKAGETOKEN }}
 
   publish_release:
     name: Publish Release
@@ -37,7 +37,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.VR_PACKAGE_TOKEN }}
+          token: ${{ secrets.VRPACKAGETOKEN }}
           fetch-depth: 0
           ref: main
 
@@ -58,7 +58,7 @@ jobs:
         if: steps.check_version.outputs.has_release == 'true' && steps.check_new_release.outputs.is_valid_version == 'true'
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.VR_PACKAGE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.VRPACKAGETOKEN }}
         with:
           tag_name: ${{ steps.check_version.outputs.new_version }}
           release_name: Release ${{ steps.check_version.outputs.new_version }}
