@@ -75,8 +75,8 @@ jobs:
           echo "::set-output name=new_version::$NEW_VERSION"
         shell: bash
 
-      - name: Upgrade Release 
-        id: upgrade_release
+      - name: Check New Release 
+        id: check_new_release
         if: steps.check_version.outputs.has_release == 'true'
         run: |
           HAS=${{steps.check_version.outputs.has_release}}
@@ -105,9 +105,18 @@ jobs:
 
           echo "::set-output name=is_valid_version::$IS_VALID_VERSION"
 
+      - name: Upgrade Release
+        id: updagrade_release
+        if: steps.check_new_release.outputs.is_valid_version == 'true'
+        run: |
+          NEW_VERSION=${{ steps.check_version.outputs.new_version }}
+          npm --no-git-tag-version version $NEW_VERSION
+          git add . 
+          git commit -m "Entrega da versão $NEW_VERSION"
+
       - name: Create Release
         id: create_release
-        if: steps.check_version.outputs.has_release == 'true' && steps.upgrade_release.outputs.is_valid_version == 'true'
+        if: steps.check_version.outputs.has_release == 'true' && steps.check_new_release.outputs.is_valid_version == 'true'
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.VRPACKAGETOKEN }}
