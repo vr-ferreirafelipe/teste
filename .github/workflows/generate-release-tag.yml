@@ -73,15 +73,15 @@ jobs:
         run: |
           LAST_VERSION=${{ steps.get_last_version.outputs.last_version }}
           echo "LAST_VERSION $LAST_VERSION"
-          $LAST_MAJOR_VERSION=$(echo "$LAST_VERSION" | cut -d. -f1)
-          $LAST_MINOR_VERSION=$(echo "$LAST_VERSION" | cut -d. -f2)
-          $LAST_PATCH_VERSION=$(echo "$LAST_VERSION" | cut -d. -f3)
+          LAST_MAJOR_VERSION=$(echo "$LAST_VERSION" | cut -d. -f1)
+          LAST_MINOR_VERSION=$(echo "$LAST_VERSION" | cut -d. -f2)
+          LAST_PATCH_VERSION=$(echo "$LAST_VERSION" | cut -d. -f3)
           
           NEW_VERSION=${{ steps.calculate_next_version.outputs.new_version }}
           echo "LAST_VERSION $NEW_VERSION"
-          $NEW_MAJOR_VERSION=$(echo "$NEW_VERSION" | cut -d. -f1)
-          $NEW_MINOR_VERSION=$(echo "$NEW_VERSION" | cut -d. -f2)
-          $NEW_PATCH_VERSION=$(echo "$NEW_VERSION" | cut -d. -f3)
+          NEW_MAJOR_VERSION=$(echo "$NEW_VERSION" | cut -d. -f1)
+          NEW_MINOR_VERSION=$(echo "$NEW_VERSION" | cut -d. -f2)
+          NEW_PATCH_VERSION=$(echo "$NEW_VERSION" | cut -d. -f3)
 
           if [[
             $NEW_MAJOR_VERSION > LAST_MAJOR_VERSION ||
