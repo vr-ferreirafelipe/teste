@@ -16,8 +16,8 @@ jobs:
   call-generate-release-tag:
     name: Call Generate release tag
     uses: ./.github/workflows/generate-release-tag.yml
-    if: needs.call-check-commit.outputs.has_changes
     needs: call-check-commit
+    if: needs.call-check-commit.outputs.has_changes
     with:
       COMMIT_MESSAGES: ${{ needs.call-check-commit.outputs.commit_message }}
     secrets:

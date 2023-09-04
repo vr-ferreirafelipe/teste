@@ -19,6 +19,8 @@ jobs:
   generate-version:
     name: Generate Tag
     runs-on: ubuntu-latest
+    outputs:
+      NEW_VERSION: ${{ steps.calculate_next_version.outputs.NEW_VERSION }}
 
     steps:
       - name: Checkout
