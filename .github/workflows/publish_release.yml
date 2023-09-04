@@ -61,8 +61,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.VRPACKAGETOKEN }}
         with:
-          tag_name: ${{ steps.check_version.outputs.new_version }}
-          release_name: Release ${{ steps.check_version.outputs.new_version }}
+          tag_name: v${{ needs.call-generate-release-tag.outputs.NEW_VERSION }}
+          release_name: Release v${{ needs.call-generate-release-tag.outputs.NEW_VERSION }}
 
 
   #   name: Generate Tag
