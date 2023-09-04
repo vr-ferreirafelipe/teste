@@ -53,6 +53,7 @@ jobs:
           npm --no-git-tag-version version $NEW_VERSION
           git add . 
           git commit -m "Entrega da versão $NEW_VERSION"
+          git push
       
       - name: Create Release
         id: create_release
