@@ -2,9 +2,9 @@ name: Publish Release
 
 on:
   workflow_dispatch:
-  release:
+  pull_request:
     types:
-      - created 
+      - closed
 
 jobs:
   call-check-commit:
@@ -23,9 +23,9 @@ jobs:
     secrets:
       VR_PACKAGE_TOKEN: ${{ secrets.VRPACKAGETOKEN }}
 
-  publish_release:
-    name: Publish Release
-    if: needs.call-check-commit.outputs.has_changes && ${{ always() }}
+  publish_main_release:
+    name: Publish Main Release
+    if: github.ref == 'refs/heads/main' && needs.call-check-commit.outputs.has_changes && ${{ always() }}
     needs: 
       - call-check-commit
       - call-generate-release-tag
