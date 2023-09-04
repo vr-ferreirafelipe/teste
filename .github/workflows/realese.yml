@@ -46,7 +46,7 @@ jobs:
         id: check_version
         run: |
           echo "PASSOU NO Check Version "
-          HAS_RELEASE=true
+          HAS_RELEASE="true"
 
           COMMIT_MESSAGES="${{ needs.call-check-commit.outputs.commit_message }}"
           VERSION=${{ steps.get_current_tag.outputs.current_version }}
@@ -68,7 +68,7 @@ jobs:
             # Nenhum commit gerará uma nova release
             echo "Nenhum commit nesta push gerará uma nova release."
             NEW_VERSION=""
-            HAS_RELEASE=false
+            HAS_RELEASE="false"
           fi 
 
           echo "::set-output name=has_release::$HAS_RELEASE"
@@ -79,7 +79,7 @@ jobs:
         id: check_new_release
         if: steps.check_version.outputs.has_release == 'true'
         run: |
-          $IS_VALID_VERSION=false
+          $IS_VALID_VERSION="false"
 
           CURRENT_VERSION=${{ steps.get_current_tag.outputs.current_version }}
           echo "CURRENT_VERSION $CURRENT_VERSION"
@@ -94,11 +94,11 @@ jobs:
           $NEW_PATCH_VERSION=$(echo "$NEW_VERSION" | cut -d. -f3)
 
           if [[ $NEW_MAJOR_VERSION > CURRENT_MAJOR_VERSION ]]; then
-            IS_VALID_VERSION=true
+            IS_VALID_VERSION="true"
           elif [[ $NEW_MAJOR_VERSION == CURRENT_MAJOR_VERSION ]] && [[ $NEW_MINOR_VERSION > CURRENT_MINOR_VERSION ]]; then
-            IS_VALID_VERSION=true
+            IS_VALID_VERSION="true"
           elif [[ $NEW_MINOR_VERSION == CURRENT_MINOR_VERSION ]] && [[ $NEW_PATCH_VERSION > CURRENT_PATCH_VERSION ]]; then
-            IS_VALID_VERSION=true
+            IS_VALID_VERSION="true"
           fi
 
           echo "::set-output name=is_valid_version::$IS_VALID_VERSION"
