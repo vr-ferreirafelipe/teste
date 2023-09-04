@@ -9,9 +9,6 @@ on:
       COMMIT_MESSAGES:
         required: true
         type: string
-      HAS_CHANGES:
-        required: true
-        type: boolean
     outputs:
       NEW_VERSION:
         description: "Armazena as messagens de novos commits"
@@ -21,8 +18,6 @@ on:
 jobs:
   generate-version:
     name: Generate Tag
-    if: inputs.HAS_CHANGES
-
     runs-on: ubuntu-latest
 
     steps:
