@@ -2,9 +2,9 @@ name: Publish Release
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
+  release:
+    types:
+      - created 
 
 jobs:
   call-check-commit:
