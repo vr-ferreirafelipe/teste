@@ -83,6 +83,13 @@ jobs:
           NEW_MINOR_VERSION=$(echo "$NEW_VERSION" | cut -d. -f2)
           NEW_PATCH_VERSION=$(echo "$NEW_VERSION" | cut -d. -f3)
 
+          echo "if 1"
+          echo ${ $NEW_MAJOR_VERSION > LAST_MAJOR_VERSION }
+          echo "if 2"
+          echo ${ $NEW_MAJOR_VERSION == LAST_MAJOR_VERSION && NEW_MINOR_VERSION > LAST_MINOR_VERSION }
+          echo "if 3"
+          echo ${ $NEW_MAJOR_VERSION == LAST_MAJOR_VERSION && $NEW_MINOR_VERSION == LAST_MINOR_VERSION && $NEW_PATCH_VERSION > LAST_PATCH_VERSION }
+
           if [[
             $NEW_MAJOR_VERSION > LAST_MAJOR_VERSION ||
             ($NEW_MAJOR_VERSION == LAST_MAJOR_VERSION && NEW_MINOR_VERSION > LAST_MINOR_VERSION) ||
