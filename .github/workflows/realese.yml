@@ -65,26 +65,36 @@ jobs:
             NEW_VERSION="$VERSION"
           fi 
 
-          echo "VERSAO"
-          echo $NEW_VERSION
-
           echo "::set-output name=new_version::$NEW_VERSION"
         shell: bash
 
-      - name: Generate Version
-        run: |
-          OLD_VERSION=${{ steps.get_current_tag.outputs.current_version }}
-          NEW_VERSION=${{ steps.check_version.outputs.new_version }}
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        # env:
+          # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ steps.check_version.outputs.new_version }}
+          release_name: Release ${{ steps.check_version.outputs.new_version }}
 
-          if [ "$OLD_VERSION" = "$NEW_VERSION" ]; then
-            # As versões são diferentes, forçar uma nova tag no Git com a versão antiga
-            git tag -f $OLD_VERSION
-          else
-            # As versões são iguais, apenas atualize a versão usando npm
-            npm version $NEW_VERSION -m "ci: release v$NEW_VERSION"
-          fi
+      # - name: Generate Version
+      #   run: |
+      #     OLD_VERSION=${{ steps.get_current_tag.outputs.current_version }}
+      #     NEW_VERSION=${{ steps.check_version.outputs.new_version }}
+
+      #     echo $OLD_VERSION
+      #     echo $NEW_VERSION
+
+      #     # if [ "$OLD_VERSION" = "$NEW_VERSION" ]; then
+      #     #   # As versões são diferentes, forçar uma nova tag no Git com a versão antiga
+      #     #   # git tag -f $OLD_VERSION
+      #     #   echo "versões iguais"
+      #     # else
+      #     #   # As versões são iguais, apenas atualize a versão usando npm
+      #     #   npm version $NEW_VERSION -m "ci: release v$NEW_VERSION"
+      #     # fi
           
-          git push
+      #     git log --tags -3
 
 
 # jobs:
