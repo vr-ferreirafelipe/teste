@@ -83,20 +83,11 @@ jobs:
           NEW_MINOR_VERSION=$(echo "$NEW_VERSION" | cut -d. -f2)
           NEW_PATCH_VERSION=$(echo "$NEW_VERSION" | cut -d. -f3)
 
-          echo "if 1"
-          echo ${ $NEW_MAJOR_VERSION > LAST_MAJOR_VERSION }
-          echo "if 2"
-          echo ${ $NEW_MAJOR_VERSION == LAST_MAJOR_VERSION && NEW_MINOR_VERSION > LAST_MINOR_VERSION }
-          echo "if 3"
-          echo ${ $NEW_MAJOR_VERSION == LAST_MAJOR_VERSION && $NEW_MINOR_VERSION == LAST_MINOR_VERSION && $NEW_PATCH_VERSION > LAST_PATCH_VERSION }
-
           if [[
-            $NEW_MAJOR_VERSION > LAST_MAJOR_VERSION ||
-            ($NEW_MAJOR_VERSION == LAST_MAJOR_VERSION && NEW_MINOR_VERSION > LAST_MINOR_VERSION) ||
-            ($NEW_MAJOR_VERSION == LAST_MAJOR_VERSION && $NEW_MINOR_VERSION == LAST_MINOR_VERSION && $NEW_PATCH_VERSION > LAST_PATCH_VERSION)
+            $NEW_MAJOR_VERSION < LAST_MAJOR_VERSION ||
+            ($NEW_MAJOR_VERSION >= LAST_MAJOR_VERSION && NEW_MINOR_VERSION < LAST_MINOR_VERSION) ||
+            ($NEW_MAJOR_VERSION >= LAST_MAJOR_VERSION && $NEW_MINOR_VERSION >= LAST_MINOR_VERSION && $NEW_PATCH_VERSION > LAST_PATCH_VERSION)
           ]]; then
-            echo "A nova versão é superior à última versão."
-          else
             echo "A nova versão não é superior à última versão. Saindo do fluxo de trabalho."
             exit 1
           fi
