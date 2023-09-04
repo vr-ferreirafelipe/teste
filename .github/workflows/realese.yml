@@ -32,8 +32,8 @@ jobs:
           fetch-depth: 0
           ref: main
 
-      # - name: Git Config
-      #   run: git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com" && git config --global user.name "${GITHUB_ACTOR}"
+      - name: Git Config
+        run: git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com" && git config --global user.name "${GITHUB_ACTOR}"
         
       - name: Get Current Tag 
         id: get_current_tag
@@ -45,8 +45,8 @@ jobs:
       - name: Check Version 
         id: check_version
         run: |
+          echo "PASSOU NO Check Version "
           HAS_RELEASE=true
-          echo "::set-output name=has_release::true"
 
           COMMIT_MESSAGES="${{ needs.call-check-commit.outputs.commit_message }}"
           VERSION=${{ steps.get_current_tag.outputs.current_version }}
@@ -75,9 +75,39 @@ jobs:
           echo "::set-output name=new_version::$NEW_VERSION"
         shell: bash
 
+      - name: Upgrade Release 
+        id: upgrade_release
+        if: steps.check_version.outputs.has_release == 'true'
+        run: |
+          HAS=${{steps.check_version.outputs.has_release}}
+          echo $HAS
+
+          echo "PASSOU NO Upgrade Release"
+          $IS_VALID_VERSION=false
+
+          CURRENT_VERSION=${{ steps.get_current_tag.outputs.current_version }}
+          $CURRENT_MAJOR_VERSION=$(echo "$CURRENT_VERSION" | cut -d. -f1)
+          $CURRENT_MINOR_VERSION=$(echo "$CURRENT_VERSION" | cut -d. -f2)
+          $CURRENT_PATCH_VERSION=$(echo "$CURRENT_VERSION" | cut -d. -f3)
+          
+          NEW_VERSION=${{ steps.check_version.outputs.new_version }}
+          $NEW_MAJOR_VERSION=$(echo "$NEW_VERSION" | cut -d. -f1)
+          $NEW_MINOR_VERSION=$(echo "$NEW_VERSION" | cut -d. -f2)
+          $NEW_PATCH_VERSION=$(echo "$NEW_VERSION" | cut -d. -f3)
+
+          if [[ $NEW_MAJOR_VERSION > CURRENT_MAJOR_VERSION ]]; then
+            IS_VALID_VERSION=true
+          elif [[ $NEW_MAJOR_VERSION == CURRENT_MAJOR_VERSION ]] && [[ $NEW_MINOR_VERSION > CURRENT_MINOR_VERSION ]]; then
+            IS_VALID_VERSION=true
+          elif [[ $NEW_MINOR_VERSION == CURRENT_MINOR_VERSION ]] && [[ $NEW_PATCH_VERSION > CURRENT_PATCH_VERSION ]]; then
+            IS_VALID_VERSION=true
+          fi
+
+          echo "::set-output name=is_valid_version::$IS_VALID_VERSION"
+
       - name: Create Release
         id: create_release
-        if: steps.check_version.outputs.has_release
+        if: steps.check_version.outputs.has_release == 'true', steps.upgrade_release.outputs.is_valid_version == 'true'
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.VRPACKAGETOKEN }}
