@@ -84,9 +84,9 @@ jobs:
           NEW_PATCH_VERSION=$(echo "$NEW_VERSION" | cut -d. -f3)
 
           if [[
-            ($NEW_MAJOR_VERSION < LAST_MAJOR_VERSION) ||
-            ($NEW_MAJOR_VERSION >= LAST_MAJOR_VERSION && NEW_MINOR_VERSION < LAST_MINOR_VERSION) ||
-            ($NEW_MAJOR_VERSION >= LAST_MAJOR_VERSION && $NEW_MINOR_VERSION >= LAST_MINOR_VERSION && $NEW_PATCH_VERSION > LAST_PATCH_VERSION)
+            ($NEW_MAJOR_VERSION -lt $LAST_MAJOR_VERSION) ||
+            ($NEW_MAJOR_VERSION -eq $LAST_MAJOR_VERSION && $NEW_MINOR_VERSION -lt $LAST_MINOR_VERSION) ||
+            ($NEW_MAJOR_VERSION -eq $LAST_MAJOR_VERSION && $NEW_MINOR_VERSION -eq $LAST_MINOR_VERSION && $NEW_PATCH_VERSION -le $LAST_PATCH_VERSION)
           ]]; then
             echo "A nova versão não é superior à última versão. Saindo do fluxo de trabalho."
             exit 1
