@@ -12,7 +12,7 @@ on:
     outputs:
       NEW_VERSION:
         description: "Armazena as messagens de novos commits"
-        value: ${{ jobs.calculate_next_version.outputs.NEW_VERSION }}
+        value: ${{ jobs.generate-version.outputs.NEW_VERSION }}
 
 
 jobs:
