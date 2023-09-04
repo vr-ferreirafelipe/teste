@@ -10,8 +10,8 @@ jobs:
   call-check-commit:
     name: Call Check Commit
     uses: ./.github/workflows/check-commits.yml
-    # secrets:
-    #   VRPACKAGETOKEN: ${{ secrets.VRPACKAGETOKEN }}
+    secrets:
+      VRPACKAGETOKEN: ${{ secrets.VRPACKAGETOKEN }}
 
   generate-version:
     name: Generate Tag
@@ -20,6 +20,7 @@ jobs:
     outputs:
       version: ${{ job.tag }}
       current_version: ${{ job.current_version }}
+      has_release: ${{ job.has_release }}
     
     runs-on: ubuntu-latest
 
@@ -27,7 +28,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          # token: ${{ secrets.VRPACKAGETOKEN }}
+          token: ${{ secrets.VRPACKAGETOKEN }}
           fetch-depth: 0
 
       - name: Git Config
@@ -43,6 +44,9 @@ jobs:
       - name: Check Version 
         id: check_version
         run: |
+          HAS_RELEASE=true
+          echo "::set-output name=has_release::true"
+
           COMMIT_MESSAGES="${{ needs.call-check-commit.outputs.commit_message }}"
           VERSION=${{ steps.get_current_tag.outputs.current_version }}
 
@@ -62,17 +66,20 @@ jobs:
           else
             # Nenhum commit gerará uma nova release
             echo "Nenhum commit nesta push gerará uma nova release."
-            NEW_VERSION="$VERSION"
+            NEW_VERSION=""
+            HAS_RELEASE=false
           fi 
 
+          echo "::set-output name=has_release::$HAS_RELEASE"
           echo "::set-output name=new_version::$NEW_VERSION"
         shell: bash
 
       - name: Create Release
         id: create_release
+        if: steps.check_version.outputs.has_release
         uses: actions/create-release@v1
-        # env:
-          # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        env:
+          GITHUB_TOKEN: ${{ secrets.VRPACKAGETOKEN }}
         with:
           tag_name: ${{ steps.check_version.outputs.new_version }}
           release_name: Release ${{ steps.check_version.outputs.new_version }}
