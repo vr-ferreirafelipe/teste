@@ -90,4 +90,5 @@ jobs:
           commit: main
           draft: false
           prerelease: false
+          token: ${{ secrets.VRPACKAGETOKEN }}
 
