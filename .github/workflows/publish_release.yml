@@ -23,8 +23,8 @@ jobs:
     secrets:
       VR_PACKAGE_TOKEN: ${{ secrets.VRPACKAGETOKEN }}
 
-  publish_main_release:
-    name: Publish Main Release
+  prepare_branch_main:
+    name: Prepare Branch Main
     if: github.ref == 'refs/heads/main' && needs.call-check-commit.outputs.has_changes && ${{ always() }}
     needs: 
       - call-check-commit
@@ -50,15 +50,18 @@ jobs:
         run: |
           NEW_VERSION=${{ needs.call-generate-release-tag.outputs.NEW_VERSION }}
 
-          npm --no-git-tag-version version $NEW_VERSION
+          npm --no-git-tag-version version $NEW_VERSION-1
           git add . 
           git commit -m "ci: Entrega da versão $NEW_VERSION"
           git push
       
-  release_version:
-    name: Release Version
+  publish_release:
+    name: Publish Release
     if: github.ref == 'refs/heads/main' && needs.call-check-commit.outputs.has_changes && ${{ always() }}
-    needs: publish_main_release
+    needs: 
+      - call-check-commit
+      - call-generate-release-tag
+      - prepare_branch_main
     runs-on: ubuntu-latest
 
     steps:
