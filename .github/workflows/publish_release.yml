@@ -62,7 +62,6 @@ jobs:
       - call-check-commit
       - call-generate-release-tag
       - prepare_branch_main
-      - upgrade_release
 
     runs-on: ubuntu-latest
 
@@ -83,4 +82,5 @@ jobs:
         with:
           tag_name: v${{ needs.call-generate-release-tag.outputs.NEW_VERSION }}
           release_name: Release v${{ needs.call-generate-release-tag.outputs.NEW_VERSION }}
+          commit: main
 
