@@ -54,19 +54,6 @@ jobs:
           git add . 
           git commit -m "Entrega da versão $NEW_VERSION"
           git push
-      
-  release_version:
-    name: Release Version
-    runs-on: ubuntu-latest
-    needs: publish_main_release
-
-    steps:
-      - name: Checkout código
-        uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.VRPACKAGETOKEN }}
-          fetch-depth: 0
-          ref: main
 
       - name: Create Release
         id: create_release
