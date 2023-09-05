@@ -37,12 +37,22 @@ jobs:
       - name: Get Last Tag 
         id: get_last_version
         run: |
-          # Inicialize uma variável de versão com a última tag
-          LAST_VERSION=$(git describe --tags --abbrev=0 | sed 's/^v//')
+          # Obtém a lista de tags e conta o número de linhas (cada linha é uma tag)
+          TAG_COUNT=$(git tag | wc -l)
+
+          if [ "$TAG_COUNT" -eq 0 ]; then
+            # define versão inicial "0.0.0"
+            LAST_VERSION="0.0.0"
+          else
+            # Inicialize uma variável de versão com a última tag
+            LAST_VERSION=$(git describe --tags --abbrev=0 | sed 's/^v//')
+          fi
+
           echo "::set-output name=last_version::$LAST_VERSION"
 
       - name: Prepare Next Version TAG 
         id: calculate_next_version
+        if: ${{ steps.get_last_version.outputs.LAST_VERSION }}
         run: |
           COMMIT_MESSAGES="${{ inputs.COMMIT_MESSAGES }}"
           lAST_VERSION=${{ steps.get_last_version.outputs.last_version }}
@@ -87,7 +97,7 @@ jobs:
           LAST_PATCH_VERSION=$(echo "$LAST_VERSION" | cut -d. -f3)
           
           NEW_VERSION=${{ steps.calculate_next_version.outputs.NEW_VERSION }}
-          echo "LAST_VERSION $NEW_VERSION"
+          echo "NEW_VERSION $NEW_VERSION"
           NEW_MAJOR_VERSION=$(echo "$NEW_VERSION" | cut -d. -f1)
           NEW_MINOR_VERSION=$(echo "$NEW_VERSION" | cut -d. -f2)
           NEW_PATCH_VERSION=$(echo "$NEW_VERSION" | cut -d. -f3)
