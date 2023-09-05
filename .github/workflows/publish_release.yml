@@ -52,8 +52,22 @@ jobs:
 
           npm --no-git-tag-version version $NEW_VERSION
           git add . 
-          git commit -m "Entrega da versão $NEW_VERSION"
+          git commit -m "ci: Entrega da versão $NEW_VERSION"
           git push
+      
+  release_version:
+    name: Release Version
+    if: github.ref == 'refs/heads/main' && needs.call-check-commit.outputs.has_changes && ${{ always() }}
+    needs: publish_main_release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.VRPACKAGETOKEN }}
+          fetch-depth: 0
+          ref: main
 
       - name: Create Release
         id: create_release
