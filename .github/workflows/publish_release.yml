@@ -62,15 +62,11 @@ jobs:
       - call-check-commit
       - call-generate-release-tag
       - prepare_branch_main
+      - upgrade_release
+
     runs-on: ubuntu-latest
 
     steps:
-      - name: Wait for Upgrade Release
-        if: always()  # Sempre execute este passo para aguardar a conclusão do push
-        run: |
-          sleep 10s  # Aguarda por 10 segundos para dar tempo ao push
-          echo "Waiting for push completion..."
-
       - name: Checkout código
         uses: actions/checkout@v2
         with:
