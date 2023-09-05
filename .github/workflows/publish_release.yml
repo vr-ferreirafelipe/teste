@@ -25,7 +25,7 @@ jobs:
 
   prepare_branch_main:
     name: Prepare Branch Main
-    if: github.ref == 'refs/heads/main' && needs.call-check-commit.outputs.has_changes
+    if: github.ref == 'refs/heads/main' && needs.call-check-commit.outputs.has_changes && ${{ always() }}
     needs: 
       - call-check-commit
       - call-generate-release-tag
@@ -57,7 +57,7 @@ jobs:
       
   publish_release:
     name: Publish Release
-    if: github.ref == 'refs/heads/main' && needs.call-check-commit.outputs.has_changes
+    if: github.ref == 'refs/heads/main' && needs.call-check-commit.outputs.has_changes && ${{ always() }}
     needs: 
       - call-check-commit
       - call-generate-release-tag
@@ -66,7 +66,7 @@ jobs:
 
     steps:
       - name: Wait for Upgrade Release
-        if: always() 
+        if: always()  # Sempre execute este passo para aguardar a conclusão do push
         run: |
           sleep 10s  # Aguarda por 10 segundos para dar tempo ao push
           echo "Waiting for push completion..."
