@@ -76,11 +76,18 @@ jobs:
       - name: Create Release
         id: create_release
         if: needs.call-generate-release-tag.outputs.HAS_RELEASE
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.VRPACKAGETOKEN }}
+        uses: ncipollo/release-action@v1
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.VRPACKAGETOKEN }}
+      #   with:
+      #     tag_name: v${{ needs.call-generate-release-tag.outputs.NEW_VERSION }}
+      #     release_name: Release v${{ needs.call-generate-release-tag.outputs.NEW_VERSION }}
+      #     commit: main
         with:
-          tag_name: v${{ needs.call-generate-release-tag.outputs.NEW_VERSION }}
-          release_name: Release v${{ needs.call-generate-release-tag.outputs.NEW_VERSION }}
+          name: ${{ inputs.versao }}
+          tag: v${{ inputs.versao }}
           commit: main
+          draft: false
+          prerelease: false
 
