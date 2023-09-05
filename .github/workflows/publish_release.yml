@@ -25,7 +25,7 @@ jobs:
 
   prepare_branch_main:
     name: Prepare Branch Main
-    if: github.ref == 'refs/heads/main' && needs.call-check-commit.outputs.has_changes && ${{ always() }}
+    if: github.ref == 'refs/heads/main' && needs.call-check-commit.outputs.has_changes
     needs: 
       - call-check-commit
       - call-generate-release-tag
@@ -50,14 +50,14 @@ jobs:
         run: |
           NEW_VERSION=${{ needs.call-generate-release-tag.outputs.NEW_VERSION }}
 
-          npm --no-git-tag-version version $NEW_VERSION-1
+          npm --no-git-tag-version version $NEW_VERSION
           git add . 
           git commit -m "ci: Entrega da versão $NEW_VERSION"
           git push
       
   publish_release:
     name: Publish Release
-    if: github.ref == 'refs/heads/main' && needs.call-check-commit.outputs.has_changes && ${{ always() }}
+    if: github.ref == 'refs/heads/main' && needs.call-check-commit.outputs.has_changes
     needs: 
       - call-check-commit
       - call-generate-release-tag
@@ -66,7 +66,7 @@ jobs:
 
     steps:
       - name: Wait for Upgrade Release
-        if: always()  # Sempre execute este passo para aguardar a conclusão do push
+        if: always() 
         run: |
           sleep 10s  # Aguarda por 10 segundos para dar tempo ao push
           echo "Waiting for push completion..."
